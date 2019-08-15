@@ -87,13 +87,6 @@ module Fluent::Plugin
      raise Fluent::ConfigError, "auth_api_key parameter or OS_PASSWORD variable not defined"
     end
 
-    if @project_name.empty?
-     raise Fluent::ConfigError, "project_name parameter or OS_PROJECT_NAME variable not defined"
-    end
-    if @domain_name.empty?
-     raise Fluent::ConfigError, "domain_name parameter or OS_PROJECT_DOMAIN_NAME variable not defined"
-    end
-
     @ext, @mime_type = case @store_as
       when 'gzip' then ['gz', 'application/x-gzip']
       when 'lzo' then
@@ -136,9 +129,8 @@ module Fluent::Plugin
       begin
         @storage = Fog::OpenStack::Storage.new(openstack_auth_url: @auth_url,
                       openstack_username: @auth_user,
-                      openstack_project_name: @project_name,
-                      openstack_domain_name: @domain_name,
                       openstack_api_key: @auth_api_key,
+                      openstack_tenant: @auth_tenant,
                       openstack_region: @auth_region)
 #      rescue Fog::OpenStack::Storage::NotFound
         # ignore NoSuchBucket Error because ensure_bucket checks it.
